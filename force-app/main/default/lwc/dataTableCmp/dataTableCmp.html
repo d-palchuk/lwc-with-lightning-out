@@ -1,0 +1,27 @@
+<template>
+        <lightning-card title="Datatable Example" icon-name="custom:custom63">
+
+            <div class="slds-m-around_medium">
+                <template if:true={wiredAccounts.data}>
+                    <lightning-input
+                        type="search"
+                        onchange={handleNameChange}
+                        class="slds-m-bottom_small"
+                        label="Filter by name"
+                        value={accountName}>
+                    </lightning-input>
+
+                    <lightning-datatable
+                        key-field="Id"
+                        data={wiredAccounts.data}
+                        columns={columns}
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </template>
+
+                <template if:true={wiredAccounts.error}>
+                    <c-error-panel errors={wiredAccounts.error}></c-error-panel>
+                </template>
+            </div>
+        </lightning-card>
+    </template>
