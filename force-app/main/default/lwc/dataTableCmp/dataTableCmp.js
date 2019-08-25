@@ -1,26 +1,28 @@
-import { LightningElement, track, wire } from 'lwc';
-import { refreshApex } from '@salesforce/apex';
+import { LightningElement, wire, track }                            from 'lwc';
+import { refreshApex }                                              from '@salesforce/apex';
+import { deleteRecord }                                             from 'lightning/uiRecordApi';
+import { CurrentPageReference }                                     from 'lightning/navigation';
+import { showNotification, TOAST_TYPE, EVENT_NAME }                 from 'c/utils';
+import { registerListener, unregisterAllListeners, fireEvent }      from 'c/pubsub';
+
 import findAccounts from '@salesforce/apex/DataTableCmpCtrl.findAccounts';
 
-import { makeServerCall, showNotification, TOAST_TYPE } from 'c/utils';
-
-/** The delay used when debouncing event handlers before invoking Apex. */
 const DELAY = 300;
 
 const actions = [
     { label: 'Show details', name: 'show_details' },
     { label: 'Edit',         name: 'edit' },
+    { label: 'Delete',       name: 'delete' },
 ];
-
 
 export default class DataTableCmp extends LightningElement {
     columns = [
-        { label: 'Account Name',        fieldName: 'Name' },
+        { label: 'Name',                fieldName: 'Name' },
         { label: 'Type'        ,        fieldName: 'Type' },
-        { label: 'Website',             fieldName: 'Website',              type: 'url' },
-        { label: 'Phone',               fieldName: 'Phone',                type: 'phone' },
+        { label: 'Phone',               fieldName: 'Phone',                type: 'phone'    },
+        { label: 'Website',             fieldName: 'Website',              type: 'url'      },
         { label: 'Annual Revenue',      fieldName: 'AnnualRevenue',        type: 'currency' },
-        { label: 'SLA Expiration Date', fieldName: 'SLAExpirationDate__c', type: 'date' },
+        { label: 'SLA Expiration Date', fieldName: 'SLAExpirationDate__c', type: 'date'     },
         {
             type: 'action',
             typeAttributes: { rowActions: actions },
@@ -29,56 +31,60 @@ export default class DataTableCmp extends LightningElement {
 
     @track accountName = '';
 
+    @wire(CurrentPageReference) pageRef;
 
     @wire(findAccounts, { accountName : '$accountName'})
     wiredAccounts;
 
-    editAccountRecord(e) {
-        let params = {
 
-        };
-
-        makeServerCall(updateAccountRecord, params, () => refreshApex(this.wiredAccounts));
+    connectedCallback() {
+        if (this.pageRef) registerListener(EVENT_NAME.FORM_CRUD, this.handlerRefreshTable, this);
+    }
+    disconnectedCallback() {
+        if (this.pageRef) unregisterAllListeners(this);
     }
 
-    handleNameChange(event) {
-        // Debouncing this method: Do not update the reactive property as long as this function is
-        // being called within a delay of DELAY. This is to avoid a very large number of Apex method calls.
+
+    handlerRefreshTable(message) {
+       refreshApex(this.wiredAccounts);
+       showNotification('Success', message || 'Table updated!', TOAST_TYPE.SUCCESS);
+    }
+
+    handlerSearchAccounts(event) {
         clearTimeout(this.delayTimeout);
+
         const searchKey = event.target.value;
+
         // eslint-disable-next-line @lwc/lwc/no-async-operation
         this.delayTimeout = setTimeout(() => {
             this.accountName = searchKey;
         }, DELAY);
     }
 
-    handleRowAction(event) {
+    handlerRowAction(event) {
         const row = event.detail.row;
+
         switch (event.detail.action.name) {
-            case 'edit':
-                showNotification('Success', 'Record has been updated.', TOAST_TYPE.SUCCESS);
-                break;
             case 'show_details':
-                showNotification('Show', 'Nothing to show!', TOAST_TYPE.WARNING);
-                // this.showRowDetails(row);
+                if (this.pageRef) fireEvent(this.pageRef, EVENT_NAME.ACCOUNT_SELECTED, { Id :  row.Id, mode : 'readOnly'} );
+                break;
+            case 'edit':
+                if (this.pageRef) fireEvent(this.pageRef, EVENT_NAME.ACCOUNT_SELECTED, { Id :  row.Id, mode : 'edit'} );
+                break;
+            case 'delete':
+                this.handlerDeleteRecord(row.Id);
                 break;
             default:
         }
     }
 
-    findRowIndexById(id) {
-        let ret = -1;
-        this.data.some((row, index) => {
-            if (row.id === id) {
-                ret = index;
-                return true;
-            }
-            return false;
-        });
-        return ret;
-    }
+    handlerDeleteRecord(recordId) {
+        deleteRecord(recordId)
+        .then(() => {
+            if (this.pageRef) fireEvent(this.pageRef, EVENT_NAME.ACCOUNT_DELETED, recordId);
 
-    showRowDetails(row) {
-        this.record = row;
+            this.handlerRefreshTable('Record has been deleted.');
+        })
+        .catch(error => showNotification('Error', error.message, TOAST_TYPE.ERROR))
     }
 }

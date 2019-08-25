@@ -1,21 +1,23 @@
 <template>
-        <lightning-card title="Datatable Example" icon-name="custom:custom63">
+        <lightning-card title="Datatable Example" icon-name="standard:entity">
 
             <div class="slds-m-around_medium">
                 <template if:true={wiredAccounts.data}>
                     <lightning-input
                         type="search"
-                        onchange={handleNameChange}
+                        onchange={handlerSearchAccounts}
                         class="slds-m-bottom_small"
                         label="Filter by name"
-                        value={accountName}>
+                        value={accountName}
+                    >
                     </lightning-input>
 
                     <lightning-datatable
                         key-field="Id"
                         data={wiredAccounts.data}
                         columns={columns}
-                        onrowaction={handleRowAction}>
+                        onrowaction={handlerRowAction}
+                    >
                     </lightning-datatable>
                 </template>
 

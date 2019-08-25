@@ -1,0 +1,85 @@
+<template>
+    <lightning-card
+        class="slds-col slds-grid slds-grid_vertical slds-p-around_x-small slds-is-relative"
+        title="Products"
+        icon-name="standard:product"
+    >
+            <template if:true={showRestaurants}>
+
+                <section class="slds-grid" slot="actions">
+                    <template if:true={restaurantId}>
+                        <lightning-button
+                            label="Add Product"
+                            class="slds-m-right_xx-small"
+                        >
+                        </lightning-button>
+                    </template>
+                    <lightning-combobox
+                        name="Restaurant"
+                        label="Restaurant:"
+                        value={selectedRestaurant}
+                        variant="label-hidden"
+                        placeholder="Select Restaurant"
+                        options={restaurants}
+                        onchange={handlerChangeRestaurant}
+                    >
+                    </lightning-combobox>
+                </section>
+            </template>
+
+            <template if:true={products}>
+                <main class="slds-grid slds-wrap">
+                    <template for:each={products} for:item="product">
+
+                        <lightning-card
+                            key={product.Id}
+                            class="slds-col slds-size_1-of-2"
+                            title={product.Name}
+                            icon-name="standard:product_item"
+                        >
+                            <div class="slds-col slds-grid slds-grid_vertical slds-grid_align-spread slds-grid_vertical-align-center slds-p-around_small slds-border_bottom product-card-body">
+                                <p class="slds-col">
+                                    <img class="slds-box_border product-picture" src={product.ImageUrl__c} alt="Product Image">
+                                </p>
+                                <p class="slds-col slds-p-around_medium">
+                                        <lightning-formatted-rich-text  value={product.Description__c}></lightning-formatted-rich-text>
+                                </p>
+                                <p class="slds-col slds-grid slds-grid_align-center slds-grid_vertical-align-center">
+                                    <lightning-formatted-number
+                                        class="slds-text-heading_medium slds-text-color_success"
+                                        value={product.Price__c}
+                                        format-style="currency"
+                                        currency-code="USD"
+                                    >
+                                    </lightning-formatted-number>
+                                    <lightning-button-icon
+                                        class="slds-m-left_small button-zhopa"
+                                        icon-name="utility:add"
+                                        size="large"
+                                        variant="bare"
+                                        alternative-text="Add to order"
+                                        data-product-id={product.Id}
+                                        onclick={handlerAddItemToOrder}
+                                    >
+                                    </lightning-button-icon>
+                                </p>
+                            </div>
+                        </lightning-card>
+                    </template>
+                </main>
+            </template>
+
+            <template if:false={products}>
+                <img src="/img/chatter/Desert.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-text-longform">
+                    <h3 class="slds-text-heading_medium slds-text-align_center">No Products</h3>
+                </div>
+            </template>
+
+            <template if:true={showSpinner}>
+                <lightning-spinner size="large"></lightning-spinner>
+            </template>
+
+            <p slot="footer">Card Footer</p>
+    </lightning-card>
+</template>

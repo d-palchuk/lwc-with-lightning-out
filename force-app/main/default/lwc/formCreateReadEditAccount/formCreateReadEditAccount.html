@@ -1,0 +1,126 @@
+<template>
+
+    <div class="wrapper slds-color__background_gray-1">
+    <!-- VIEW FORM -->
+        <template if:true={isReadOnlyMode}>
+            <lightning-card
+                title="RecordViewForm"
+                icon-name="standard:account"
+            >
+                <lightning-button-group
+                    slot="actions"
+                >
+                    <lightning-button
+                        label="Edit"
+                        onclick={handlerSwitchToEditMode}
+                    ></lightning-button>
+
+                    <lightning-button
+                        label="New"
+                        onclick={handlerGenerateNewForm}
+                    ></lightning-button>
+
+                </lightning-button-group>
+
+
+                <div class="slds-m-around_medium">
+                    <lightning-record-view-form
+                        object-api-name={objectApiName}
+                        record-id={recordId}
+                    >
+                        <lightning-output-field
+                            field-name={field.Name}
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name={field.Type}
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name={field.Phone}
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name={field.Website}
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name={field.AnnualRevenue}
+                        ></lightning-output-field>
+                        <lightning-output-field
+                            field-name={field.SLAExpirationDate}
+                        ></lightning-output-field>
+                    </lightning-record-view-form>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- EDIT FORM -->
+        <template if:true={isEditMode}>
+            <lightning-card
+                title="RecordEditForm"
+                icon-name="standard:account"
+            >
+                <div class="slds-m-around_medium">
+                    <lightning-record-edit-form
+                        object-api-name={objectApiName}
+                        record-id={recordId}
+                        onsuccess={handlerSuccess}
+                        onsubmit={handlerSubmit}
+                    >
+                        <lightning-input-field
+                            field-name={field.Name}
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            field-name={field.Type}
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            field-name={field.Phone}
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            field-name={field.Website}
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            field-name={field.AnnualRevenue}
+                        ></lightning-input-field>
+                        <lightning-input-field
+                            field-name={field.SLAExpirationDate}
+                        ></lightning-input-field>
+
+                        <div class="slds-m-top_medium">
+                            <lightning-button
+                                label="Cancel"
+                                onclick={handlerCancel}
+                            ></lightning-button>
+                            <lightning-button
+                                variant="brand"
+                                type="submit"
+                                name="save"
+                                label="Save"
+                            ></lightning-button>
+                        </div>
+
+                    </lightning-record-edit-form>
+                </div>
+            </lightning-card>
+        </template>
+
+        <!-- WHEN NO SPECIFIED RECORD -->
+        <template if:false={hasContent}>
+            <div class="slds-illustration slds-illustration_large slds-col slds-p-around_small" aria-hidden="true">
+                <lightning-button
+                    class="slds-float_right"
+                    label="New"
+                    onclick={handlerGenerateNewForm}
+                >
+                </lightning-button>
+                <img src="/img/chatter/Desert.svg" class="slds-illustration__svg" alt=""/>
+                <div class="slds-text-longform">
+                    <h3 class="slds-text-heading_medium">No Record</h3>
+                </div>
+            </div>
+        </template>
+
+        <c-view-source source="lwc/formCreateReadEditAccount" slot="footer">
+            Create an editable form for a specific record. This recipe uses a
+            static schema definition (fields are explicitly imported).
+        </c-view-source>
+    </div>
+
+</template>

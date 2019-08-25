@@ -2,6 +2,12 @@
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 
+export const EVENT_NAME = {
+    ACCOUNT_SELECTED : 'accountSelected',
+    ACCOUNT_DELETED  : 'accountDeleted',
+    FORM_CRUD        : 'formCRUD',
+}
+
 export const TOAST_TYPE = {
     INFO    : 'info',
     ERROR   : 'error',
