@@ -1,5 +1,6 @@
 import { LightningElement, track, api } from 'lwc';
-import getProducts                            from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
+import { makeServerCall }               from 'c/utils';
+import createOrder                      from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
 
 
 export default class FormNewOrder extends LightningElement {
@@ -14,9 +15,10 @@ export default class FormNewOrder extends LightningElement {
     @api
     addOrderItem(product) {
         const orderItem = {
-            productId : product.Id,
-            price     : product.Price__c,
-            count     : 1,
+            productName : product.Name,
+            productId   : product.Id,
+            price       : product.Price__c,
+            count       : 1,
         };
         const itemIndex = this.orderItems.findIndex(item => item.productId === orderItem.productId);
 
@@ -68,7 +70,27 @@ export default class FormNewOrder extends LightningElement {
         this.stage = 1;
     }
     handlerConfirmOrder() {
+        // this.showSpinner = true;
 
+        let orderInfo = Array.from(this.template.querySelectorAll('lightning-input')).reduce((info, input) => {
+            info[input.name] = input.value;
+            return info;
+        }, {})
+
+        console.log(JSON.stringify(orderInfo))
+
+        const params = {
+            orderInfoJSON  : JSON.stringify(orderInfo),
+            orderItemsJSON : JSON.stringify(this.orderItems),
+        };
+        makeServerCall(createOrder, params, result => {
+            console.log(JSON.stringify(result));
+            this.showSpinner = false;
+        });
+
+    }
+    test(event) {
+        console.log(event.target.value)
     }
 
     increaseOrderAmount(value) {

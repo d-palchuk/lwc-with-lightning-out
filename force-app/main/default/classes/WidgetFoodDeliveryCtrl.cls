@@ -11,23 +11,30 @@ public with sharing class WidgetFoodDeliveryCtrl {
         return wosInstance.getProducts(restaurantId);
     }
     @AuraEnabled
-    public static ResultData createOrder(String restaurantId, String clientRecordJSON, String orderItemsJSON){
-        OrderInfoWrapper orderInfoWrapper = (OrderInfoWrapper)JSON.deserialize(clientRecordJSON, OrderInfoWrapper.class);
+    public static ResultData createOrder(String orderInfoJSON, String orderItemsJSON){
+        OrderInfoWrapper orderInfoWrapper = (OrderInfoWrapper)JSON.deserialize(orderInfoJSON, OrderInfoWrapper.class);
         ResultData       resultData    = new ResultData();
 
+        System.debug(orderInfoWrapper);
+
         Client__c        clientRecord  = new Client__c(
-            Id       = orderInfoWrapper.clientId,
             Name     = orderInfoWrapper.clientName,
             Phone__c = orderInfoWrapper.clientPhone,
             Email__C = orderInfoWrapper.clientEmail
         );
 
+        if (String.isNotBlank(orderInfoWrapper.clientId)) { clientRecord.Id = orderInfoWrapper.clientId; }
+
+        System.debug(clientRecord);
+
         upsert clientRecord;
 
-        if (orderInfoWrapper.clientId != clientRecord.Id) { resultData.clientId = clientRecord.Id; }
+        System.debug(clientRecord);
+
+        // if (orderInfoWrapper.clientId != null && orderInfoWrapper.clientId != clientRecord.Id) { resultData.clientId = clientRecord.Id; }
 
         Order__c orderRecord = new Order__c(
-            Client__c           = orderInfoWrapper.clientId,
+            Client__c           = clientRecord.Id,
             DeliveryDateTime__c = orderInfoWrapper.deliveryDateTime
         );
 
@@ -40,9 +47,9 @@ public with sharing class WidgetFoodDeliveryCtrl {
         return resultData;
     }
 
-    @future
+    
     private static void createOrderItemsFuture(String orderId, String orderItemsJSON) {
-        List<OrderItemWrapper> orderItemWrappers = (List<OrderItemWrapper>)JSON.deserialize(orderItemsJSON, OrderItemWrapper.class);
+        List<OrderItemWrapper> orderItemWrappers = (List<OrderItemWrapper>)JSON.deserialize(orderItemsJSON, List<OrderItemWrapper>.class);
         List<OrderItem__c>     orderItemRecords  = new List<OrderItem__c>();
 
         for (OrderItemWrapper item : orderItemWrappers) {
@@ -80,6 +87,7 @@ public with sharing class WidgetFoodDeliveryCtrl {
     }
 
     public class OrderItemWrapper {
+        public String  productName;
         public String  productId;
         public Integer count;
         public Decimal price;

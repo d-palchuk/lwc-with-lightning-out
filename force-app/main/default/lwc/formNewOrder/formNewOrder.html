@@ -9,7 +9,7 @@
             <div key={item.Id}
                  class="slds-col slds-grid slds-grid_vertical-align-center slds-p-around_small slds-text-font_monospace slds-text-heading_small">
                 <p class=" slds-col slds-text-align_left">
-                    {item.Name}
+                    {item.productName}
                 </p>
                 <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-size_1-of-3">
                     <lightning-button-icon
@@ -40,7 +40,41 @@
         </template>
 
 
-
+        <template if:true={isSecondStep}>
+            <div class="slds-p-around_small order-info">
+                <lightning-input
+                    type="text"
+                    name="clientId"
+                    label="Client ID:"
+                ></lightning-input>
+                <lightning-input
+                    type="text"
+                    name="clientName"
+                    label="Name:"
+                    required
+                ></lightning-input>
+                <lightning-input
+                    type="tel"
+                    name="clientPhone"
+                    label="Phone:"
+                    pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
+                    message-when-pattern-mismatch="Please enter the phone number matched pattern: 00-000-0000 "
+                    title="Pattern: XX-XXX-XXXX"
+                    required
+                ></lightning-input>
+                <lightning-input
+                    type="text"
+                    name="clientEmail"
+                    label="Email:"
+                ></lightning-input>
+                <lightning-input
+                    type="datetime"
+                    name="deliveryDateTime"
+                    label="Delivery Date/Time"
+                    required
+                ></lightning-input>
+            </div>
+        </template>
 
 
         <div slot="footer"
@@ -67,13 +101,10 @@
                     onclick={handlerPreviousStep}
                 >
                 </lightning-button>
-            </template>
-
-            <template if:true={clientId}>
                 <lightning-button
                     label="Confirm Order"
                     title="Confirm Order"
-                    onclick={handlerConfirmOrder    }
+                    onclick={handlerConfirmOrder}
                 >
                 </lightning-button>
             </template>
