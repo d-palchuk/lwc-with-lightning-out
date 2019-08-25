@@ -3,8 +3,8 @@ import { makeServerCall }                     from 'c/utils';
 import isGuest                                from '@salesforce/user/isGuest';
 import userId                                 from '@salesforce/user/Id';
 
-import getRestaurants from '@salesforce/apex/WidgetFoodDeliveryCtrl.getRestaurants';
-import getProducts from '@salesforce/apex/WidgetFoodDeliveryCtrl.getProducts';
+import getRestaurants                         from '@salesforce/apex/WidgetFoodDeliveryCtrl.getRestaurants';
+import getProducts                            from '@salesforce/apex/WidgetFoodDeliveryCtrl.getProducts';
 
 
 export default class ProductTable extends LightningElement {
@@ -51,7 +51,6 @@ export default class ProductTable extends LightningElement {
             setTimeout(() => { this.showSpinner = false; }, 4);
         });
     }
-
 
 
     handlerChangeRestaurant(event) {
