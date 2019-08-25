@@ -41,7 +41,7 @@
     width: 18rem;
     height: 18rem;
 }
-.button-zhopa:active {
+.button-add:active {
     -webkit-animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
             animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
