@@ -33,6 +33,14 @@
   }
 }
 
+@media (max-width: 720px) {
+  .product-card {
+    width: 100% !important;
+  }
+  .order-amount {
+    font-size: 1rem !important;
+  }
+}
 
 .product-card-body {
     min-height: 30rem;

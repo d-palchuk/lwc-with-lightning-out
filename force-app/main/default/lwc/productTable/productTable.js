@@ -25,7 +25,7 @@ export default class ProductTable extends LightningElement {
     }
 
     connectedCallback() {
-        this.showRestaurants = this.restaurantId && isGuest ? false : true;
+        this.showRestaurants = this.restaurantId && !userId ? false : true;
 
         if (this.showRestaurants) this.fetchRestaurants();
         if (this.restaurantId)    this.fetchProducts();

@@ -94,9 +94,9 @@ public with sharing class WidgetFoodDeliveryCtrl {
     }
 
     public class ResultData {
-        public String message = 'SUCCESS';
-        public String clientId;
-        public String orderNumber;
+        @AuraEnabled public String message = 'SUCCESS';
+        @AuraEnabled public String clientId;
+        @AuraEnabled public String orderNumber;
     }
 
 

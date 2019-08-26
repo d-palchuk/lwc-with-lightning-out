@@ -1,0 +1,8 @@
+@media (max-width: 720px) {
+    .container {
+      flex-direction: column !important;
+    }
+    .content {
+        width: 100% !important;
+    }
+  }

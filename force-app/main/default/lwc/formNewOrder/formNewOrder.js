@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, track, api } from 'lwc';
 import { makeServerCall }               from 'c/utils';
 import createOrder                      from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
@@ -7,9 +8,9 @@ export default class FormNewOrder extends LightningElement {
 
     @track orderItems  = [];
 
-    @track showSpinner = false;
-    @track orderAmount = 0;
-    @track stage       = 1;
+    @track spinnerShowed = false;
+    @track orderAmount   = 0;
+    @track stage         = 1;
     @track clientId;
 
     @api
@@ -39,20 +40,29 @@ export default class FormNewOrder extends LightningElement {
         return this.stage === 1 ? 'standard:orders' : 'standard:contact';
     }
 
-    get isNextVisible() {
+    get isFirstStage() {
         return this.stage === 1 && this.orderAmount;
     }
-    get isSecondStep() {
+    get isSecondStage() {
         return this.stage === 2;
+    }
+    get isThirdStage() {
+        return this.stage === 3;
     }
 
 
+    handlerSetFirstStage() {
+        this.stage = 1;
+    }
+    handlerSetNextStage() {
+        this.stage += 1;
+    }
     handlerAddToOrder(event) {
         const itemIndex = event.target.dataset.itemIndex;
 
         this.orderItems[itemIndex].count += 1;
 
-        this.increaseOrderAmount(this.orderItems[itemIndex].Price__c);
+        this.increaseOrderAmount(this.orderItems[itemIndex].price);
     }
     handlerRemoveFromOrder(event) {
         const itemIndex = event.target.dataset.itemIndex;
@@ -63,40 +73,50 @@ export default class FormNewOrder extends LightningElement {
 
         if (this.orderItems[itemIndex].count === 0) this.orderItems.splice(itemIndex, 1);
     }
-    handlerNextStep() {
-        this.stage = 2;
-    }
-    handlerPreviousStep() {
-        this.stage = 1;
-    }
     handlerConfirmOrder() {
-        // this.showSpinner = true;
+        this.showSpinner();
 
-        let orderInfo = Array.from(this.template.querySelectorAll('lightning-input')).reduce((info, input) => {
-            info[input.name] = input.value;
+        const orderInfoFields = Array.from(this.template.querySelectorAll('.order-info lightning-input'));
+        const orderInfo       = orderInfoFields.reduce((info, field) => {
+            field.showHelpMessageIfInvalid();
+            info[field.name] = field.value;
             return info;
-        }, {})
+        }, {});
 
-        console.log(JSON.stringify(orderInfo))
+        if (orderInfoFields.every(field => field.checkValidity()) === false) return this.hideSpinner();
 
         const params = {
             orderInfoJSON  : JSON.stringify(orderInfo),
             orderItemsJSON : JSON.stringify(this.orderItems),
         };
-        makeServerCall(createOrder, params, result => {
-            console.log(JSON.stringify(result));
-            this.showSpinner = false;
-        });
 
-    }
-    test(event) {
-        console.log(event.target.value)
+        // makeServerCall(createOrder, params, result => {
+
+        //     setTimeout(() => this.hideSpinner(), 4);
+        // });
+
+
+        setTimeout(() => {
+            this.clearOrderInfo();
+            this.hideSpinner();
+        }, 1000);
     }
 
+    clearOrderInfo() {
+        this.orderItems  = [];
+        this.orderAmount = 0
+        this.stage       = 1;
+    }
     increaseOrderAmount(value) {
         this.orderAmount += value;
     }
     subtractOrderAmount(value) {
         this.orderAmount -= value;
+    }
+    showSpinner() {
+        this.spinnerShowed = true;
+    }
+    hideSpinner() {
+        this.spinnerShowed = false;
     }
 }

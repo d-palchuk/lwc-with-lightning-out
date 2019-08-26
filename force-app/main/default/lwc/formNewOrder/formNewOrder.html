@@ -5,7 +5,8 @@
         icon-name={cardIcon}
     >
 
-        <template if:true={orderAmount} for:each={orderItems} for:item="item" for:index="index">
+        <!-- STAGE 1 -->
+        <template if:true={isFirstStage} for:each={orderItems} for:item="item" for:index="index">
             <div key={item.Id}
                  class="slds-col slds-grid slds-grid_vertical-align-center slds-p-around_small slds-text-font_monospace slds-text-heading_small">
                 <p class=" slds-col slds-text-align_left">
@@ -39,8 +40,8 @@
             </div>
         </template>
 
-
-        <template if:true={isSecondStep}>
+        <!-- STAGE 2 -->
+        <template if:true={isSecondStage}>
             <div class="slds-p-around_small order-info">
                 <lightning-input
                     type="text"
@@ -57,9 +58,9 @@
                     type="tel"
                     name="clientPhone"
                     label="Phone:"
-                    pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
-                    message-when-pattern-mismatch="Please enter the phone number matched pattern: 00-000-0000 "
-                    title="Pattern: XX-XXX-XXXX"
+                    pattern="[+]{1}[0-9]{9}"
+                    message-when-pattern-mismatch="Please enter the phone number matched pattern: +375-00-0000000 "
+                    title="Pattern: +375-00-0000000"
                     required
                 ></lightning-input>
                 <lightning-input
@@ -76,33 +77,37 @@
             </div>
         </template>
 
+        <!-- STAGE 3 -->
+        <template if:true={isThirdStage}>
+            
+        </template>
 
+        <!-- CARD FOOTER -->
         <div slot="footer"
              class="slds-grid slds-grid_align-spread"
         >
-            <template if:true={isNextVisible}>
+            <template if:true={isFirstStage}>
                 <lightning-button
                     label="Next"
                     title="Next"
                     icon-name="utility:forward"
                     icon-position="right"
-                    onclick={handlerNextStep}
+                    onclick={handlerSetNextStage}
                 >
                 </lightning-button>
             </template>
 
-            <template if:true={isSecondStep}>
+            <template if:true={isSecondStage}>
                 <lightning-button
                     label="Back"
                     title="Back"
-                    icon-name="utility:back"
-                    icon-position="left"
+                 
                     class="slds-m-right_x-small"
-                    onclick={handlerPreviousStep}
+                    onclick={handlerSetFirstStage}
                 >
                 </lightning-button>
                 <lightning-button
-                    label="Confirm Order"
+                    label="Confirm"
                     title="Confirm Order"
                     onclick={handlerConfirmOrder}
                 >
@@ -120,13 +125,13 @@
         </div>
 
         <template if:false={orderAmount}>
-            <img src="/img/chatter/Desert.svg" class="slds-illustration__svg" alt=""/>
+            <img src="/img/chatter/Desert.svg" class="slds-illustration__svg" alt="No items to order image"/>
             <div class="slds-text-longform">
-                <h3 class="slds-text-heading_medium slds-text-align_center">No items to order</h3>
+                <h3 class="slds-text-heading_medium slds-text-align_center order-amount">No items to order</h3>
             </div>
         </template>
 
-        <template if:true={showSpinner}>
+        <template if:true={spinnerShowed}>
             <lightning-spinner size="medium"></lightning-spinner>
         </template>
 
