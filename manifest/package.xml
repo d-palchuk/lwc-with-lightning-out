@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>*</members>
+        <members>DataTableCmpCtrl</members>
+        <members>WidgetFoodDeliveryCtrl</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexPage</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>lightningOutApp</members>
         <name>AuraDefinitionBundle</name>
+    </types>
+    <types>
+        <members>Client__c</members>
+        <members>Product__c</members>
+        <members>Order__c</members>
+        <members>OrderItem__c</members>
+        <name>CustomObject</name>
     </types>
     <types>
         <members>*</members>

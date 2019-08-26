@@ -33,3 +33,4 @@ $RECYCLE.BIN/
 /.prettierrc
 /force-app/main/default/lwc/jsconfig.json
 /sfdx-project.json
+salesforce-lightning-design-system.css
