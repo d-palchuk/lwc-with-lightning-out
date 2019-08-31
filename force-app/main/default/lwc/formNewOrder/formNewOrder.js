@@ -1,6 +1,6 @@
 /* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, track, api } from 'lwc';
-import { makeServerCall }               from 'c/utils';
+import { makeServerCall, showNotification }               from 'c/utils';
 import createOrder                      from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
 
 
@@ -11,7 +11,6 @@ export default class FormNewOrder extends LightningElement {
     @track spinnerShowed = false;
     @track orderAmount   = 0;
     @track stage         = 1;
-    @track clientId;
 
     @api
     addOrderItem(product) {
@@ -90,16 +89,16 @@ export default class FormNewOrder extends LightningElement {
             orderItemsJSON : JSON.stringify(this.orderItems),
         };
 
-        // makeServerCall(createOrder, params, result => {
+        makeServerCall(createOrder, params, result => {
+            showNotification('Order has been created', `Your order number: ${result.orderNumber}`, 'SUCCESS');
+            setTimeout(() => {
+                this.clearOrderInfo();
+                this.hideSpinner();
+            }, 4);
+        });
 
-        //     setTimeout(() => this.hideSpinner(), 4);
-        // });
 
 
-        setTimeout(() => {
-            this.clearOrderInfo();
-            this.hideSpinner();
-        }, 1000);
     }
 
     clearOrderInfo() {

@@ -45,11 +45,6 @@
             <div class="slds-p-around_small order-info">
                 <lightning-input
                     type="text"
-                    name="clientId"
-                    label="Client ID:"
-                ></lightning-input>
-                <lightning-input
-                    type="text"
                     name="clientName"
                     label="Name:"
                     required
@@ -58,9 +53,9 @@
                     type="tel"
                     name="clientPhone"
                     label="Phone:"
-                    pattern="[+]{1}[0-9]{9}"
-                    message-when-pattern-mismatch="Please enter the phone number matched pattern: +375-00-0000000 "
-                    title="Pattern: +375-00-0000000"
+                    pattern="[0-9]{2}-[0-9]{3}-[0-9]{4}"
+                    message-when-pattern-mismatch="Please enter the phone number matched pattern: XX-XXX-XXXX "
+                    title="Phone pattern: XX-XXX-XXXX"
                     required
                 ></lightning-input>
                 <lightning-input
