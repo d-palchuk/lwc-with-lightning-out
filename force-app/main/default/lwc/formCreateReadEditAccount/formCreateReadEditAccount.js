@@ -1,3 +1,4 @@
+/* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, wire, track, api }                        from 'lwc';
 import { showNotification, TOAST_TYPE, EVENT_NAME, }           from 'c/utils';
 import { registerListener, unregisterAllListeners, fireEvent } from 'c/pubsub';
@@ -13,10 +14,8 @@ import SLA_EXP_DATE_FIELD   from '@salesforce/schema/Account.SLAExpirationDate__
 
 
 const MODE = {
-    CREATE : false,
-    READ_ONLY   : false,
-    EDIT   : false,
-    BOTH   : false,
+    READ_ONLY : false,
+    EDIT      : false,
 }
 
 export default class FormCreateReadEditAccount extends LightningElement {
@@ -79,8 +78,8 @@ export default class FormCreateReadEditAccount extends LightningElement {
         }
     }
     handlerGenerateNewForm() {
-        showNotification('Success', 'New form has been created.', TOAST_TYPE.SUCCESS);
         this.recordId = undefined;
+
         this.handlerSwitchToEditMode();
     }
     handlerSuccess(event) {

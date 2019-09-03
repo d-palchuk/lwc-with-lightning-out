@@ -17,7 +17,7 @@
                 <lightning-combobox
                     name="Restaurant"
                     label="Restaurant:"
-                    value={selectedRestaurantId}
+                    value={restaurantId}
                     variant="label-hidden"
                     placeholder="Select Restaurant"
                     options={restaurants}
@@ -37,6 +37,17 @@
                         title={product.Name}
                         icon-name="standard:product_item"
                     >
+
+                        <template if:true={isAdmin}>
+                            <lightning-button-icon
+                                slot="actions"
+                                data-product-id={product.Id}
+                                icon-name="utility:edit"
+                                variant="bare"
+                                size="large"
+                                onclick={handlerEditProduct}
+                            ></lightning-button-icon>
+                        </template>
                         <div class="slds-col slds-grid slds-grid_vertical slds-grid_align-spread slds-grid_vertical-align-center slds-p-around_small slds-border_bottom product-card-body">
                             <p class="slds-col">
                                 <img class="slds-box_border product-picture" src={product.ImageUrl__c} alt="Product Image">
@@ -69,48 +80,6 @@
             </main>
         </template>
 
-        <!-- ADD PRODUCT FORM -->
-        <template if:true={showAddProductForm}>
-            <div class="slds-m-around_medium">
-                <lightning-record-edit-form
-                    object-api-name={objectApiName}
-                    record-id={recordId}
-                    onsuccess={handlerSuccess}
-                    onsubmit={handlerSubmit}
-                >
-                    <lightning-input-field
-                        field-name={product.isActive}
-                    ></lightning-input-field>
-                    <lightning-input-field
-                        field-name={product.name}
-                    ></lightning-input-field>
-                    <lightning-input-field
-                        field-name={product.price}
-                    ></lightning-input-field>
-                    <lightning-input-field
-                        field-name={product.imageUrl}
-                    ></lightning-input-field>
-                    <lightning-input-field
-                        field-name={product.description}
-                    ></lightning-input-field>
-
-                    <div class="slds-m-top_medium">
-                        <lightning-button
-                            label="Cancel"
-                            onclick={handlerCancel}
-                        ></lightning-button>
-                        <lightning-button
-                            variant="brand"
-                            type="submit"
-                            name="save"
-                            label="Save"
-                        ></lightning-button>
-                    </div>
-
-                </lightning-record-edit-form>
-            </div>
-        </template>
-
         <template if:false={products}>
             <img src="/img/chatter/Desert.svg" class="slds-illustration__svg" alt=""/>
             <div class="slds-text-longform">
@@ -122,6 +91,6 @@
             <lightning-spinner size="large"></lightning-spinner>
         </template>
 
-        <p slot="footer">Card Footer</p>
+        <p slot="footer"></p>
     </lightning-card>
 </template>

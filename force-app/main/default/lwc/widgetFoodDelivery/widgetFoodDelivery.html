@@ -1,18 +1,29 @@
 <template>
 
     <div class="slds-col slds-grid container">
-            <main class="slds-col slds-size_2-of-3 content">
-                <c-product-table
-                    restaurant-id={restaurantId}
-                    onadditem={handlerAddItemToOrder}
-                >
-                </c-product-table>
-            </main>
+        <main class="slds-col slds-size_2-of-3 content">
+            <c-product-table
+                restaurant-id={restaurantId}
+                onadditem={handlerAddItemToOrder}
+                onaddproduct={handlerShowAddProductForm}
+                oneditproduct={handlerShowEditProductForm}
+                onchangerestaurant={handlerChangeRestaurant}
+            >
+            </c-product-table>
+        </main>
 
-            <section class="slds-col slds-grid slds-grid_vertical sidebar">
-                <c-form-new-order></c-form-new-order>
-                <c-form-add-product></c-form-add-product>
-            </section>
-        </div>
+        <section class="slds-col slds-grid slds-grid_vertical sidebar">
+            <c-form-new-order></c-form-new-order>
+
+            <template if:true={showAddProductForm}>
+                <c-form-add-product
+                    restaurant-id={restaurantId}
+                    record-id={productId}
+                    oncloseform={handlerHideProductForm}
+                    onproductcreated={updateProductsTable}
+                ></c-form-add-product>
+            </template>
+        </section>
+    </div>
 
 </template>

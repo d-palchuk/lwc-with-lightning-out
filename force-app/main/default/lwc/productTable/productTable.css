@@ -43,13 +43,13 @@
 }
 
 .product-card-body {
-    min-height: 30rem;
+  min-height: 36rem;
 }
 .product-picture {
-    width: 18rem;
-    height: 18rem;
+  width : 20rem;
+  height: 22rem;
 }
 .button-add:active {
-    -webkit-animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-            animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  -webkit-animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+          animation: rotate-in-center 0.8s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
