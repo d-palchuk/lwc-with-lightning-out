@@ -41,6 +41,8 @@ export default class FormAddProduct extends LightningElement {
         showNotification('Product has been saved', '', TOAST_TYPE.SUCCESS);
 
         this.dispatchEvent(new CustomEvent('productcreated'));
+
+        this.template.querySelector('lightning-record-edit-form').reset();
     }
     handlerCloseForm(event) {
         this.dispatchEvent(new CustomEvent('closeform'));
