@@ -1,7 +1,7 @@
 /* eslint-disable @lwc/lwc/no-async-operation */
 import { LightningElement, track, api } from 'lwc';
-import { makeServerCall, showNotification }               from 'c/utils';
-import createOrder                      from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
+import { doRequest, showNotification }               from 'c/utils';
+import createOrder  from '@salesforce/apex/WidgetFoodDeliveryCtrl.createOrder';
 
 
 export default class FormNewOrder extends LightningElement {
@@ -74,7 +74,10 @@ export default class FormNewOrder extends LightningElement {
     }
     handlerConfirmOrder() {
         this.showSpinner();
+        this.createOrder();
+    }
 
+    createOrder() {
         const orderInfoFields = Array.from(this.template.querySelectorAll('.order-info lightning-input'));
         const orderInfo       = orderInfoFields.reduce((info, field) => {
             field.showHelpMessageIfInvalid();
@@ -84,21 +87,19 @@ export default class FormNewOrder extends LightningElement {
 
         if (orderInfoFields.every(field => field.checkValidity()) === false) return this.hideSpinner();
 
-        const params = {
+        doRequest(createOrder, {
             orderInfoJSON  : JSON.stringify(orderInfo),
             orderItemsJSON : JSON.stringify(this.orderItems),
-        };
-
-        makeServerCall(createOrder, params, result => {
+        })
+        .then(result => {
             showNotification('Order has been created', `Your order number: ${result.orderNumber}`, 'SUCCESS');
-            setTimeout(() => {
-                this.clearOrderInfo();
-                this.hideSpinner();
-            }, 4);
-        });
 
+            this.clearOrderInfo();
+        })
+        .finally(() => {
+            this.hideSpinner();
 
-
+        })
     }
 
     clearOrderInfo() {

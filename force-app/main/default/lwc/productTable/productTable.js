@@ -1,5 +1,5 @@
 import { LightningElement, wire, track, api } from 'lwc';
-import { makeServerCall }                     from 'c/utils';
+import { doRequest } from 'c/utils';
 
 import userId              from '@salesforce/user/Id';
 import getRestaurants      from '@salesforce/apex/WidgetFoodDeliveryCtrl.getRestaurants';
@@ -32,21 +32,24 @@ export default class ProductTable extends LightningElement {
     fetchProducts() {
         this.showSpinner = true;
 
-        let params = {
+        doRequest(getProducts, {
             restaurantId : this.restaurantId,
-        };
-
-        makeServerCall(getProducts, params, response => {
+        })
+        .then(response => {
             this.products = response.length > 0 ? response : undefined;
 
-            // eslint-disable-next-line @lwc/lwc/no-async-operation
-            setTimeout(() => { this.showSpinner = false; }, 4);
-        });
+        })
+        .finally(() => {
+            this.showSpinner = false;
+        })
     }
     fetchRestaurants() {
-        makeServerCall(getRestaurants, null, response => {
+        doRequest(getRestaurants)
+        .then(response => {
             this.restaurants = response;
-        });
+        })
+        .finally(() => {
+        })
     }
 
     handlerChangeRestaurant(event) {
